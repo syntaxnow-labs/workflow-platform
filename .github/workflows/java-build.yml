@@ -1,0 +1,32 @@
+name: Java Build Workflow
+
+on:
+  workflow_call:
+    inputs:
+      java_version:
+        type: string
+        default: "17"
+      build_command:
+        type: string
+        default: "mvn -B package -DskipTests"
+
+jobs:
+  build_java:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.java_version }}
+
+      - name: Build
+        run: ${{ inputs.build_command }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jar
+          path: target/*.jar

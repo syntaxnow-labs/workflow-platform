@@ -1,0 +1,31 @@
+name: Node Build Workflow
+
+on:
+  workflow_call:
+    inputs:
+      build_command:
+        type: string
+        default: "yarn build"
+
+jobs:
+  build_node:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: ${{ inputs.build_command }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
