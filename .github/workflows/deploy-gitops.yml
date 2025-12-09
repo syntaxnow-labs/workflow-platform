@@ -66,7 +66,7 @@ jobs:
 
       - name: Update image tag
         run: |
-          FILE="apps/${{ inputs.app_name }}/values-${{ inputs.environment }}.yaml"
+          FILE="apps/${{ inputs.app_name }}/overlays/${{ inputs.environment }}/values-${{ inputs.environment }}.yaml"
           yq eval ".image.tag = \"${{ needs.docker.outputs.tag }}\"" -i "$FILE"
 
       - name: Commit & Push
