@@ -6,38 +6,55 @@ on:
       node_version:
         type: string
         default: "18"
+      service:
+        type: string
+        required: true
+      branch:
+        type: string
+        required: true
 
 jobs:
   quality_node:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # --- Checkout actual service repo ---
+      - name: Checkout service repository
+        uses: actions/checkout@v4
+        with:
+          repository: syntaxnow-labs/${{ inputs.service }}
+          ref: ${{ inputs.branch }}
+          token: ${{ secrets.GITOPS_TOKEN }}
 
+      # --- Setup Node ---
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node_version }}
 
+      # --- Install dependencies ---
       - name: Install Dependencies
         run: |
           echo "Installing dependencies..."
-          yarn install --frozen-lockfile
+          yarn install --frozen-lockfile || npm install
 
+      # --- Run quality checks ---
       - name: Run Quality Checks
         run: |
           echo "Running Node quality checks..."
-          echo "✔ Running type check placeholder"
+
+          echo "✔ Placeholder: Type checking"
           # tsc --noEmit
 
-          echo "✔ Lint placeholder"
-          # yarn lint
+          echo "✔ Placeholder: Linting"
+          # yarn lint || npm run lint
 
-          echo "✔ Test placeholder"
-          # yarn test --watchAll=false
+          echo "✔ Placeholder: Unit tests"
+          # yarn test --watchAll=false || npm test
 
-          echo "All checks placeholder completed."
+          echo "All Node checks completed (placeholder)."
 
+      # --- Upload report ---
       - name: Upload placeholder report
         run: echo "Node quality checks placeholder" > node-quality-report.txt
 

@@ -6,13 +6,25 @@ on:
       java_version:
         type: string
         default: "17"
+      service:
+        type: string
+        required: true
+      branch:
+        type: string
+        required: true
 
 jobs:
   quality_java:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      # Checkout the ACTUAL service repository
+      - name: Checkout service repository
+        uses: actions/checkout@v4
+        with:
+          repository: syntaxnow-labs/${{ inputs.service }}
+          ref: ${{ inputs.branch }}
+          token: ${{ secrets.GITOPS_TOKEN }}
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -26,11 +38,8 @@ jobs:
           echo "✔ Compiling application"
           mvn -q compile
 
-          echo "✔ Skipping tests for now (placeholder for real tests)"
-          # mvn test  <-- you will enable later
-
-          echo "✔ Placeholder: Static analysis tools can run here"
-          # example future step:
+          echo "✔ Placeholder for tests & static analysis"
+          # mvn test
           # mvn spotbugs:spotbugs
 
       - name: Upload placeholder report

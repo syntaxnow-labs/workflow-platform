@@ -32,7 +32,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+
+      - name: Checkout service repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/${{ inputs.app_name }}
+          ref: ${{ inputs.branch }}
+          token: ${{ secrets.GITOPS_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -68,12 +74,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
         with:
           repository: ${{ inputs.gitops_repo }}
           token: ${{ secrets.GITOPS_TOKEN }}
 
-      - name: Update image tag
+      - name: Update image tag in GitOps
         run: |
           FILE="apps/${{ inputs.app_name }}/overlays/${{ inputs.environment }}/values-${{ inputs.environment }}.yaml"
           yq eval ".image.tag = \"${{ needs.docker.outputs.tag }}\"" -i "$FILE"
