@@ -32,6 +32,8 @@ jobs:
     if: needs.select-build.outputs.service_type == 'java'
     uses: syntaxnow-labs/workflow-platform/.github/workflows/quality-check-java.yml@main
     with:
+      service: ${{ needs.select-build.outputs.service }}
+      branch: ${{ needs.select-build.outputs.branch }}
       java_version: "17"
 
   # -------------------------------------------------------
@@ -41,6 +43,9 @@ jobs:
     needs: select-build
     if: needs.select-build.outputs.service_type == 'node'
     uses: syntaxnow-labs/workflow-platform/.github/workflows/quality-check-node.yml@main
+    with:
+      service: ${{ needs.select-build.outputs.service }}
+      branch: ${{ needs.select-build.outputs.branch }}
 
   # -------------------------------------------------------
   # Deployment (GitOps)
