@@ -35,8 +35,6 @@ jobs:
       service: ${{ needs.select-build.outputs.service }}
       branch: ${{ needs.select-build.outputs.branch }}
       java_version: "17"
-    secrets:
-      GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
 
   # -------------------------------------------------------
   # Node Build Pipeline
@@ -48,8 +46,6 @@ jobs:
     with:
       service: ${{ needs.select-build.outputs.service }}
       branch: ${{ needs.select-build.outputs.branch }}
-    secrets:
-      GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
 
   # -------------------------------------------------------
   # Deployment (GitOps)
