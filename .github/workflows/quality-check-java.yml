@@ -1,0 +1,42 @@
+name: Java Quality Check Workflow
+
+on:
+  workflow_call:
+    inputs:
+      java_version:
+        type: string
+        default: "17"
+
+jobs:
+  quality_java:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ inputs.java_version }}
+
+      - name: Run Quality Checks
+        run: |
+          echo "Running Java quality checks..."
+          echo "✔ Compiling application"
+          mvn -q compile
+
+          echo "✔ Skipping tests for now (placeholder for real tests)"
+          # mvn test  <-- you will enable later
+
+          echo "✔ Placeholder: Static analysis tools can run here"
+          # example future step:
+          # mvn spotbugs:spotbugs
+
+      - name: Upload placeholder report
+        run: echo "Quality check placeholder" > quality-report.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: quality-report
+          path: quality-report.txt

@@ -5,21 +5,16 @@ This repository acts as a central CI/CD engine for all services.
 Instead of duplicating YAML files in every repo, applications can simply call these workflows using:
 
 ```yaml
-uses: YOUR-ORG/workflow-platform/.github/workflows/node-build.yml@main
+uses: YOUR-ORG/workflow-platform/.github/workflows/quality-check-node.yml@main
 ```
 
 ## 🔧 Included Workflows
 
-| Workflow            | Purpose                                                                      |
-| ------------------- | ---------------------------------------------------------------------------- |
-| `node-build.yml`    | Build any Node/React/NextJS project                                          |
-| `java-build.yml`    | Build any Maven-based Java or Spring Boot service                            |
-| `deploy-gitops.yml` | Build Docker → Push to GHCR → Update GitOps repo → Trigger ArgoCD deployment |
-
-## Workflow	Purpose
- - node-build.yml	Build any Node/React/NextJS project
- - java-build.yml	Build any Maven-based Java or Spring Boot service
- - deploy-gitops.yml	Build Docker → Push to GHCR → Update GitOps repo → Trigger ArgoCD deployment
+| Workflow                 | Purpose                                                                      |
+|--------------------------| ---------------------------------------------------------------------------- |
+| `quality-check-node.yml` | Runs quality checks for any Node/React/NextJS project (lint, tests, etc.)    |
+| `quality-check-java.yml` | Runs quality checks for any Java/Spring Boot service (compile, tests, etc.)  |
+| `deploy-gitops.yml`      | Build Docker → Push to GHCR → Update GitOps repo → Trigger ArgoCD deployment |
 
 ## 📁 Repository Structure
 ```sh
@@ -32,7 +27,7 @@ In any application repo:
 ```yaml
 jobs:
   build:
-    uses: YOUR-ORG/workflow-platform/.github/workflows/node-build.yml@main
+    uses: YOUR-ORG/workflow-platform/.github/workflows/quality-check-node.yml@main
 ```
 
 ## 🧬 GitOps Ready

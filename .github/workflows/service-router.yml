@@ -1,0 +1,52 @@
+name: Service Router
+
+on:
+  repository_dispatch:
+    types: [service-update]
+
+jobs:
+
+  select-build:
+    runs-on: ubuntu-latest
+
+    outputs:
+      service: ${{ github.event.client_payload.service }}
+      service_type: ${{ github.event.client_payload.service_type }}
+      branch: ${{ github.event.client_payload.branch }}
+
+    steps:
+      - run: |
+          echo "Service: ${{ github.event.client_payload.service }}"
+          echo "Service Type: ${{ github.event.client_payload.service_type }}"
+          echo "Branch: ${{ github.event.client_payload.branch }}"
+
+
+  java-build:
+    needs: select-build
+    if: needs.select-build.outputs.service_type == 'java'
+    uses: syntaxnow-labs/workflow-platform/.github/workflows/quality-check-java.yml@main
+
+
+  node-build:
+    needs: select-build
+    if: needs.select-build.outputs.service_type == 'node'
+    uses: syntaxnow-labs/workflow-platform/.github/workflows/quality-check-node.yml@main
+
+
+  deploy:
+    needs:
+      - select-build     # REQUIRED so we can read its outputs
+      - java-build
+      - node-build
+    if: always()
+    uses: syntaxnow-labs/workflow-platform/.github/workflows/deploy-gitops.yml@main
+
+    with:
+      app_name: ${{ needs.select-build.outputs.service }}
+      branch: ${{ needs.select-build.outputs.branch }}
+      environment: ${{ needs.select-build.outputs.branch }}
+      gitops_repo: "syntaxnow-labs/gitops"
+
+    secrets:
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+      GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}

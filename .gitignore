@@ -1,2 +1,7 @@
-statuses
-*.kubeconfig
+# Default ignored files
+/shelf/
+/.idea/workspace.xml
+.DS_Store
+
+.idea
+.vscode
