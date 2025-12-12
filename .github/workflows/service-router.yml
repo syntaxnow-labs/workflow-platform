@@ -5,6 +5,10 @@ on:
     types: [service-update]
 
 jobs:
+
+  # -------------------------------------------------------
+  # Select Build
+  # -------------------------------------------------------
   select-build:
     runs-on: ubuntu-latest
     outputs:
@@ -28,24 +32,15 @@ jobs:
     if: needs.select-build.outputs.service_type == 'java'
     uses: syntaxnow-labs/workflow-platform/.github/workflows/quality-check-java.yml@main
     with:
-      service: ${{ needs.select-build.outputs.service }}
-      branch: ${{ needs.select-build.outputs.branch }}
       java_version: "17"
-    secrets:
-      GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
 
   # -------------------------------------------------------
-  # Node Build Pipeline (unchanged, similar logic)
+  # Node Build Pipeline
   # -------------------------------------------------------
   node-build:
     needs: select-build
     if: needs.select-build.outputs.service_type == 'node'
     uses: syntaxnow-labs/workflow-platform/.github/workflows/quality-check-node.yml@main
-    with:
-      service: ${{ needs.select-build.outputs.service }}
-      branch: ${{ needs.select-build.outputs.branch }}
-    secrets:
-      GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
 
   # -------------------------------------------------------
   # Deployment (GitOps)
@@ -55,13 +50,15 @@ jobs:
       - select-build
       - java-build
       - node-build
-    if: always()  # Deploy if at least one build actually ran
+    if: always()
     uses: syntaxnow-labs/workflow-platform/.github/workflows/deploy-gitops.yml@main
+
     with:
       app_name: ${{ needs.select-build.outputs.service }}
       branch: ${{ needs.select-build.outputs.branch }}
       environment: ${{ needs.select-build.outputs.environment }}
       gitops_repo: "syntaxnow-labs/gitops"
+
     secrets:
       GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
       GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
