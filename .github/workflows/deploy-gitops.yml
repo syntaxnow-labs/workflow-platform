@@ -67,7 +67,7 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}:sha-${{ github.sha }}
 
     outputs:
-      tag: ${{ inputs.branch }}
+      tag: ${{ inputs.branch }}-${{ github.sha }}
 
   update_gitops:
     needs: docker
@@ -90,5 +90,11 @@ jobs:
           git config user.email "actions@github.com"
           git config user.name "GitHub Actions"
           git add .
+          
+          # Prevent failure when no changes exist
+          if git diff --cached --quiet; then
+            echo "No GitOps changes detected — skipping commit."
+            exit 0
+          fi
           git commit -m "Update image tag → ${{ inputs.app_name }}:${{ needs.docker.outputs.tag }}"
           git push
