@@ -24,7 +24,7 @@ jobs:
         with:
           repository: syntaxnow-labs/${{ inputs.service }}
           ref: ${{ inputs.branch }}
-          token: ${{ secrets.GITOPS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Java
         uses: actions/setup-java@v4
