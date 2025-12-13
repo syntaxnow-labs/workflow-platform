@@ -80,13 +80,14 @@ jobs:
           repository: ${{ inputs.gitops_repo }}
           token: ${{ secrets.GITOPS_TOKEN }}
 
-      - name: Update image tag in GitOps
+      - name: Update image tag in GitOps (React)
         run: |
-          $FILE="apps/${{ inputs.app_name }}/overlays/${{ inputs.environment }}/patch-image.yaml"
+          FILE="apps/${{ inputs.app_name }}/overlays/${{ inputs.environment }}/patch-image.yaml"
           
           yq eval "
-          .spec.template.spec.containers[0].image =
-          \"ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}:${{ needs.docker.outputs.tag }}\"" -i "$FILE"
+            .spec.template.spec.containers[0].image =
+            \"ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}:${{ needs.docker.outputs.tag }}\"
+          " -i "$FILE"
 
       - name: Commit & Push
         run: |
