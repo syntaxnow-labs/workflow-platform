@@ -43,7 +43,7 @@ jobs:
       - name: Capture service commit SHA
         id: meta
         run: |
-          SHA=$(git rev-parse --short=12 HEAD)
+          SHA=$(git rev-parse --short=7 HEAD)
           TAG="${{ inputs.branch }}-${SHA}"
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "Using image tag: $TAG"
