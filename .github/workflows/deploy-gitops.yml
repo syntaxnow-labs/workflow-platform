@@ -36,9 +36,17 @@ jobs:
       - name: Checkout service repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.repository_owner }}/${{ inputs.app_name }}
+          repository: ${{ env.OWNER }}/${{ inputs.app_name }}
           ref: ${{ inputs.branch }}
           token: ${{ secrets.GITOPS_TOKEN }}
+
+      - name: Capture service commit SHA
+        id: meta
+        run: |
+          SHA=$(git rev-parse --short=12 HEAD)
+          TAG="${{ inputs.branch }}-${SHA}"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Using image tag: $TAG"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -62,12 +70,11 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}:${{ inputs.branch }}
-            ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}:${{ inputs.branch }}-${{ github.sha }}
-            ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}:sha-${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/${{ inputs.app_name }}:${{ inputs.branch }}
+            ghcr.io/${{ env.OWNER }}/${{ inputs.app_name }}:${{ steps.meta.outputs.tag }}
 
     outputs:
-      tag: ${{ inputs.branch }}-${{ github.sha }}
+      tag: ${{ steps.meta.outputs.tag }}
 
   update_gitops:
     needs: docker
@@ -80,13 +87,13 @@ jobs:
           repository: ${{ inputs.gitops_repo }}
           token: ${{ secrets.GITOPS_TOKEN }}
 
-      - name: Update image tag in GitOps (React)
+      - name: Update image tag in GitOps
         run: |
           FILE="apps/${{ inputs.app_name }}/overlays/${{ inputs.environment }}/patch-image.yaml"
           
           yq eval "
             .spec.template.spec.containers[0].image =
-            \"ghcr.io/${{ github.repository_owner }}/${{ inputs.app_name }}:${{ needs.docker.outputs.tag }}\"
+            \"ghcr.io/${{ env.OWNER }}/${{ inputs.app_name }}:${{ needs.docker.outputs.tag }}\"
           " -i "$FILE"
 
       - name: Commit & Push
