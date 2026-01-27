@@ -87,9 +87,27 @@ jobs:
           repository: ${{ inputs.gitops_repo }}
           token: ${{ secrets.GITOPS_TOKEN }}
 
+      - name: Normalize environment
+        id: envfix
+        run: |
+          ENV="${{ inputs.environment }}"
+            
+          if [ "$ENV" = "main" ]; then
+            ENV="prod"
+          fi
+          
+          if [[ "$ENV" != "dev" && "$ENV" != "qa" && "$ENV" != "prod" ]]; then
+            echo "Invalid environment: $ENV"
+            exit 1
+          fi
+            
+          echo "env=$ENV" >> $GITHUB_OUTPUT
+          echo "Resolved overlay environment: $ENV"
+
       - name: Update image tag in GitOps
         run: |
-          FILE="apps/${{ inputs.app_name }}/overlays/${{ inputs.environment }}/patch-image.yaml"
+          ENV="${{ steps.envfix.outputs.env }}"
+          FILE="apps/${{ inputs.app_name }}/overlays/$ENV/patch-image.yaml"
           
           yq eval "
             .spec.template.spec.containers[0].image =
