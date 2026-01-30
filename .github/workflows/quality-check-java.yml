@@ -32,13 +32,30 @@ jobs:
           distribution: temurin
           java-version: ${{ inputs.java_version }}
 
+      - name: Configure Maven for GitHub Packages
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${GITHUB_ACTOR}</username>
+                <password>${GITHUB_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run Quality Checks
         run: |
           echo "Running Java quality checks..."
-          echo "✔ Compiling application"
-          mvn -q compile
+          echo "Compiling application"
+          mvn -s ~/.m2/settings.xml -q compile
 
-          echo "✔ Placeholder for tests & static analysis"
+          echo "Placeholder for tests & static analysis"
           # mvn test
           # mvn spotbugs:spotbugs
 
