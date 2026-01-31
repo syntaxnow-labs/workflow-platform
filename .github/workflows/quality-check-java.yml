@@ -54,8 +54,8 @@ jobs:
           mvn clean compile \
             -s ../shared-config/maven/syntaxnow-maven-settings.xml
         env:
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: raja-syntaxnow
+          GITHUB_TOKEN: ${{ secrets.SYNTAXNOW_PACKAGES_TOKEN }}
 
       # 5. Upload placeholder report
       - name: Upload placeholder report
