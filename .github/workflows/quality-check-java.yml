@@ -34,7 +34,10 @@ jobs:
           repository: syntaxnow-labs/workflow-platform
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: workflow-platform
+          path: shared-config
+
+      - name: Show workspace structure
+        run: ls -R
 
       # 3. Setup Java
       - name: Setup Java
@@ -49,7 +52,7 @@ jobs:
           echo "Running Java quality checks..."
           cd service
           mvn clean compile \
-            -s ../workflow-platform/maven/syntaxnow-maven-settings.xml
+            -s ../shared-config/maven/syntaxnow-maven-settings.xml
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
