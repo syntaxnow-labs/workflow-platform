@@ -18,71 +18,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the ACTUAL service repository
+      # 1. Checkout the ACTUAL service repository
       - name: Checkout service repository
         uses: actions/checkout@v4
         with:
           repository: syntaxnow-labs/${{ inputs.service }}
           ref: ${{ inputs.branch }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          path: service
 
+      # 2. Checkout workflow-platform repo (contains shared Maven settings.xml)
+      - name: Checkout workflow-platform repository
+        uses: actions/checkout@v4
+        with:
+          repository: syntaxnow-labs/workflow-platform
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: workflow-platform
+
+      # 3. Setup Java
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: ${{ inputs.java_version }}
 
-      - name: Configure Maven for GitHub Packages
-        run: |
-          mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml <<EOF
-          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
-
-            <activeProfiles>
-              <activeProfile>github</activeProfile>
-            </activeProfiles>
-
-            <profiles>
-              <profile>
-                <id>github</id>
-                <repositories>
-                  <repository>
-                    <id>github</id>
-                    <url>https://maven.pkg.github.com/syntaxnow-labs/*</url>
-                    <releases>
-                      <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                      <enabled>true</enabled>
-                    </snapshots>
-                  </repository>
-                </repositories>
-              </profile>
-            </profiles>
-
-            <servers>
-              <server>
-                <id>github</id>
-                <username>${GITHUB_ACTOR}</username>
-                <password>${GITHUB_TOKEN}</password>
-              </server>
-            </servers>
-
-          </settings>
-          EOF
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      # 4. Run Maven using shared settings.xml
       - name: Run Quality Checks
         run: |
           echo "Running Java quality checks..."
-          echo "Compiling application"
-          mvn -s ~/.m2/settings.xml compile
+          cd service
+          mvn clean compile \
+            -s ../workflow-platform/maven/syntaxnow-maven-settings.xml
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          echo "Placeholder for tests & static analysis"
-          # mvn test
-          # mvn spotbugs:spotbugs
-
+      # 5. Upload placeholder report
       - name: Upload placeholder report
         run: echo "Quality check placeholder" > quality-report.txt
 
