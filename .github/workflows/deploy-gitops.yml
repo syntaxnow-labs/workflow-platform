@@ -21,6 +21,8 @@ on:
         required: true
       GITOPS_TOKEN:
         required: true
+      SYNTAXNOW_PACKAGES_TOKEN:
+        required: true
 
 env:
   REGISTRY: ghcr.io

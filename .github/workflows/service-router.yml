@@ -70,3 +70,4 @@ jobs:
     secrets:
       GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
       GITOPS_TOKEN: ${{ secrets.GITOPS_TOKEN }}
+      SYNTAXNOW_PACKAGES_TOKEN: ${{ secrets.SYNTAXNOW_PACKAGES_TOKEN }}
