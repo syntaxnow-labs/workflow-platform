@@ -36,6 +36,9 @@ jobs:
       branch: ${{ needs.select-build.outputs.branch }}
       java_version: "17"
 
+    secrets:
+      SYNTAXNOW_PACKAGES_TOKEN: ${{ secrets.SYNTAXNOW_PACKAGES_TOKEN }}
+
   # -------------------------------------------------------
   # Node Build Pipeline
   # -------------------------------------------------------
