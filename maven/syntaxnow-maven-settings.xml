@@ -3,44 +3,42 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
                               https://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-  <!-- Auth will be injected via env vars -->
-  <servers>
-    <server>
-      <id>github</id>
-      <username>${env.GITHUB_ACTOR}</username>
-      <password>${env.GITHUB_TOKEN}</password>
-    </server>
-  </servers>
+    <!-- Auth will be injected via env vars -->
+    <servers>
+        <server>
+            <id>github</id>
+            <username>${env.GITHUB_ACTOR}</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+        <server>
+            <id>syntaxnow-starter-parent</id>
+            <username>${env.GITHUB_ACTOR}</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+        <server>
+            <id>syntaxnow-sso-starter</id>
+            <username>${env.GITHUB_ACTOR}</username>
+            <password>${env.GITHUB_TOKEN}</password>
+        </server>
+    </servers>
+    <!-- SyntaxNow Internal Maven Repos -->
+    <profiles>
+        <profile>
+            <id>syntaxnow-internal</id>
+            <repositories>
+                <repository>
+                    <id>syntaxnow-starter-parent</id>
+                    <url>https://maven.pkg.github.com/SyntaxNow-Labs/syntaxnow-starter-parent</url>
+                </repository>
+                <repository>
+                    <id>syntaxnow-sso-starter</id>
+                    <url>https://maven.pkg.github.com/SyntaxNow-Labs/syntaxnow-sso-starter</url>
+                </repository>
+            </repositories>
 
-  <!-- SyntaxNow Internal Maven Repos -->
-  <profiles>
-    <profile>
-      <id>syntaxnow-internal</id>
-
-      <repositories>
-
-        <!-- Parent -->
-        <repository>
-          <id>github</id>
-          <url>https://maven.pkg.github.com/SyntaxNow-Labs/syntaxnow-starter-parent</url>
-        </repository>
-
-        <!-- SSO Starter -->
-        <repository>
-          <id>github</id>
-          <url>https://maven.pkg.github.com/SyntaxNow-Labs/syntaxnow-sso-starter</url>
-        </repository>
-
-        <!-- Add future libs here -->
-        <!-- logging-starter, utils, etc -->
-
-      </repositories>
-
-    </profile>
-  </profiles>
-
-  <activeProfiles>
-    <activeProfile>syntaxnow-internal</activeProfile>
-  </activeProfiles>
-
+        </profile>
+    </profiles>
+    <activeProfiles>
+        <activeProfile>syntaxnow-internal</activeProfile>
+    </activeProfiles>
 </settings>
