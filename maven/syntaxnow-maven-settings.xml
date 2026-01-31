@@ -21,13 +21,13 @@
 
         <!-- Parent -->
         <repository>
-          <id>syntaxnow-starter-parent</id>
+          <id>github</id>
           <url>https://maven.pkg.github.com/SyntaxNow-Labs/syntaxnow-starter-parent</url>
         </repository>
 
         <!-- SSO Starter -->
         <repository>
-          <id>syntaxnow-sso-starter</id>
+          <id>github</id>
           <url>https://maven.pkg.github.com/SyntaxNow-Labs/syntaxnow-sso-starter</url>
         </repository>
 
