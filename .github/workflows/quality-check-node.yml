@@ -12,6 +12,9 @@ on:
       branch:
         type: string
         required: true
+    secrets:
+      SYNTAXNOW_PACKAGES_TOKEN:
+        required: true
 
 jobs:
   quality_node:
