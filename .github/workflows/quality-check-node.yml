@@ -37,6 +37,8 @@ jobs:
         run: |
           echo "Installing dependencies..."
           yarn install --frozen-lockfile || npm install
+        env:
+          SN_GITHUB_TOKEN: ${{ secrets.SYNTAXNOW_PACKAGES_TOKEN }}
 
       # --- Run quality checks ---
       - name: Run Quality Checks
