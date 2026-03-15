@@ -15,6 +15,8 @@ on:
     secrets:
       SYNTAXNOW_PACKAGES_TOKEN:
         required: true
+      SYNTAXNOW_REPO_TOKEN:
+        required: true
 
 jobs:
   quality_java:
@@ -27,7 +29,7 @@ jobs:
         with:
           repository: syntaxnow-labs/${{ inputs.service }}
           ref: ${{ inputs.branch }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SYNTAXNOW_REPO_TOKEN }}
           path: service
 
       # 2. Checkout workflow-platform repo (contains shared Maven settings.xml)
@@ -36,7 +38,7 @@ jobs:
         with:
           repository: syntaxnow-labs/workflow-platform
           ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.SYNTAXNOW_REPO_TOKEN }}
           path: shared-config
 
       - name: Show workspace structure

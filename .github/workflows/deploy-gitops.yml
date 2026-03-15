@@ -23,6 +23,8 @@ on:
         required: true
       SYNTAXNOW_PACKAGES_TOKEN:
         required: true
+      SYNTAXNOW_REPO_TOKEN:
+        required: true
 
 env:
   REGISTRY: ghcr.io
@@ -40,7 +42,7 @@ jobs:
         with:
           repository: ${{ env.OWNER }}/${{ inputs.app_name }}
           ref: ${{ inputs.branch }}
-          token: ${{ secrets.GITOPS_TOKEN }}
+          token: ${{ secrets.SYNTAXNOW_REPO_TOKEN }}
 
       - name: Capture service commit SHA
         id: meta
